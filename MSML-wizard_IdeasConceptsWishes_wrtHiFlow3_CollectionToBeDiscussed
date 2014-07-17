@@ -1,0 +1,125 @@
+
+====================================================
+IDEAS for the Setup of an MSML Wizard/GUI
+ - to lead through the MSML.XML-File writing process
+====================================================
+
+Notes:
+======
+
+- Facilitate automated filling of MSML.XML-Files
+  (by the example of MSML-Input for HiFlow3-based Simulations on Liver/Heart/Aorta)
+- Simulation-Scenarios-Management
+  - Facilitate Variation of Parameters in specific ranges (related to UQ)
+  - Facilitate Sets of Simulation Scenarios w.r.t. e.g. BCdata-Input sets.
+    (e.g. w.r.t. Heart/MV-Surgery and different ring shapes (Nico),
+          w.r.t. Radiotherapy scenarios and plan-of-the-day proposals (Markus),
+          w.r.t. general UQ-methodology (Chen/Heuveline/H-its), ...)
+
+
+
+Wizard Questions to lead through MSML.XML-File Filling/Creation Process:
+========================================================================
+
+Notation: <Question> <input type & option> <if/else-followUp>
+
+
+- Which patient will you operate on?
+  - textfeld: int number / name with reference to int number.
+
+- Which organ will you operate on?
+  - select: liver / heart / aorta
+
+  - start Segmentation-process of <organ>
+    -> output <segmented organ>
+
+  - which accuracy [in mm] do you require the simulation to satisfy?
+    - textfeld: int number
+      (Question by Nico: can we include a checker, which tests the values on their reasonability?)
+
+    -> start MeshGeneration-process of <segmented organ>
+       -> output <meshed organ>
+
+-> if liver:
+    - Are the deformations caused by your surgical manipulation rather large?
+      - select: yes / no
+        -> if large:
+              use corotated linear elasticity model
+           elseif small:
+              use linera elasticity model
+    - The liver simulation will be set up using literature-based mean material properties of a liver. Are you fine with this?
+      - select: yes / no
+        -> if yes:
+              setup material parameters according to "lookup table"
+              (can I give you a table where you access these values automatically?)
+           elseif no:
+              - Please give material properties of your choice!
+                - Please give material parameter 'E-module'
+                  textfeld: int number
+                - Please give material parameter 'Poisson Ratio'
+                  textfeld: int number
+    - Do you want to consider uncertainties with maths-based methods of Uncertainty Quantification (UQ)?
+      - select: yes / no
+        -> if yes:
+              which parameters do you assume to be subject to uncertainties or prone to errors?
+              - textfeld: blablubb
+                -> ToDo Nico: Think about ways to act accordingly...
+                For a first instance, we set up a set of simulation scenarios,
+                varying the material parameters in the range [E+-\eps]
+    - Will cutting processes be part of your liver operation?
+      - select: yes / no
+        -> if yes:
+              setup simulation using X-FEM ...
+
+-> if heart:
+    - Are the deformations caused by your surgical manipulation rather large?
+      - select: yes / no
+        -> if large:
+              use corotated linear elasticity model
+           elseif small:
+              use linera elasticity model
+    - The heart (mitral valve) simulation will be set up using literature-based mean material properties of
+      a heart's valve leaflets. Are you fine with this?
+      - select: yes / no
+        -> if yes:
+              setup material parameters according to "lookup table"
+              (can I give you a table where you access these values automatically?)
+           elseif no:
+              - Please give material properties of your choice!
+                - Please give material parameter 'E-module'
+                  textfeld: int number
+                - Please give material parameter 'Poisson Ratio'
+                  textfeld: int number
+   - Which parameter do you want to set as the optimization goal? Size of Coaptation or Ring stress?
+     -> if Size of Coaptation:
+           do...
+        elseif Ring stress:
+           do...
+    - Do you want to consider uncertainties with maths-based methods of Uncertainty Quantification (UQ)?
+      - select: yes / no
+        -> if yes:
+              which parameters do you assume to be subject to uncertainties or prone to errors?
+              - textfeld: blablubb
+                -> ToDo Nico: Think about ways to act accordingly...
+                For a first instance, we set up a set of simulation scenarios,
+                varying the material parameters in the range [E+-\eps]
+    - Do you want to consider different MV-reconstruction scenarios
+      (possibly building on maths-based methods of Uncertainty Quantification (UQ))?
+      - select: yes / no
+        -> if yes:
+              You may vary the shape of the implanted AnnulusRing. Therefore, please choose a set of ring types.
+              - textfeld: int number
+                -> ToDo Nico: Think about ways to act accordingly...
+                Set up a set of simulation scenarios, 
+                varying the BCdata-input-file, w.r.t. Fixed/DisplacedDirichletBCs.
+                @ Alexander: Can I use the template notation {{parameter}} for this, too?
+
+-> if aorta:
+    etc.
+
+- What is the time frame of your operation and your operation steps?
+  ...
+  ToDo: maybe ask UniHD-RZ for availability of HPC-infrastructure apart from FZ-Jülich...?
+
+- Do you need continuous visualization support or only visualization of step-by-step results?
+  ...
